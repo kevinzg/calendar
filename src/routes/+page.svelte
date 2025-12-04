@@ -47,8 +47,9 @@
         <li>Press <kbd>Ctrl</kbd> + <kbd>P</kbd> to print/save to PDF</li>
     </ul>
     <textarea
-        class="w-full rounded-lg border p-2"
+        class="w-full rounded-lg border p-2 my-2 font-mono"
         placeholder="Dec 25: Christmas"
+        rows="4"
         bind:value={userEventsText}
     ></textarea>
 </div>
