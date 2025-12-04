@@ -41,10 +41,11 @@
 
 <div class="print:hidden mx-auto max-w-4xl p-4">
     <h2 class="font-bold text-lg">Events</h2>
-    <p class="text-gray-700">
-        Enter events in format: "Jan 1: New Year"<br />
-        Add a "*" for a ★, or a "+" for a ♥
-    </p>
+    <ul class="text-gray-700">
+        <li>Write special dates using this format: <code>Jan 1: New Year</code></li>
+        <li>Add a "*" for a ★, or a "+" for a ♥</li>
+        <li>Press <kbd>Ctrl</kbd> + <kbd>P</kbd> to print/save to PDF</li>
+    </ul>
     <textarea
         class="w-full rounded-lg border p-2"
         placeholder="Dec 25: Christmas"
@@ -142,5 +143,9 @@
 
     .holiday {
         @apply font-extrabold underline;
+    }
+
+    kbd {
+        @apply inline-block rounded-sm border border-gray-700 bg-gray-100 px-1 py-0.5 text-sm leading-snug font-bold whitespace-nowrap text-gray-600;
     }
 </style>
