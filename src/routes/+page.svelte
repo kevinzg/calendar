@@ -1,5 +1,8 @@
 <script lang="ts">
     import { createCalendar, parseEvents, sampleHolidays, type EventSpec } from '$lib/calendar';
+    import Heart from '$lib/assets/Heart.svelte';
+    import Star from '$lib/assets/Star.svelte';
+    import Circle from '$lib/assets/Circle.svelte';
     import { onMount } from 'svelte';
 
     let currentYear = $state(new Date().getFullYear());
@@ -121,14 +124,14 @@
                                 {day.date}
                                 {#if day.event}
                                     <div
-                                        class="absolute inset-0 -z-10 flex items-center justify-center rounded-full px-1 text-xs text-gray-300"
+                                        class="absolute inset-0 -z-10 flex items-center justify-center text-gray-300"
                                     >
                                         {#if day.event.includes('+')}
-                                            <span class="text-[4.8rem] pt-[0.55rem]">♥</span>
+                                            <Heart className="w-16 h-16" />
                                         {:else if day.event.includes('*')}
-                                            <span class="text-[4.5rem] pb-[0.74rem]">★</span>
+                                            <Star className="w-16 h-16" />
                                         {:else}
-                                            <span class="text-[4.2rem] pb-[0.74rem]">●</span>
+                                            <Circle className="w-16 h-16" />
                                         {/if}
                                     </div>
                                 {/if}
