@@ -83,7 +83,7 @@
     </div>
 </div>
 
-<div class="space-y-8 p-4 font-[Open_Sans]">
+<div class="space-y-8 p-4 font-calendar">
     {#each calendar.months as month (month.name)}
         <div class:break-after-page={month.number % 2 === 1 && month.number !== 11}>
             <div class="flex justify-between px-10 py-4 text-4xl">
