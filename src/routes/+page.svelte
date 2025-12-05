@@ -71,6 +71,16 @@
             &gt;
         </button>
     </div>
+
+    <!-- Print Button -->
+    <div class="flex items-center justify-center">
+        <button
+            class="rounded-lg bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600 hover:cursor-pointer"
+            onclick={() => window.print()}
+        >
+            Print Calendar
+        </button>
+    </div>
 </div>
 
 <div class="space-y-8 p-4 font-[Open_Sans]">
