@@ -1,8 +1,14 @@
+/**
+ * A calendar year, containing a year number and an array of months.
+ */
 export type Calendar = {
     year: number;
     months: Month[];
 };
 
+/**
+ * A single day in the calendar grid.
+ */
 export type Day = {
     date: number;
     event: string;
@@ -10,26 +16,53 @@ export type Day = {
     thisMonth: boolean;
 };
 
+/**
+ * A week, represented as an array of 7 days.
+ */
 export type Week = Day[];
 
+/**
+ * A month, containing its name, a grid of weeks, and its zero-based number.
+ */
 export type Month = {
     name: string;
     weeks: Week[]; // 6 weeks
     number: number;
 };
 
+/**
+ * Specification for an event to be placed on the calendar.
+ */
 export type EventSpec = Array<{ month: number; date: number; event: string }>;
 
+/**
+ * Creates a calendar for a given year with a list of events.
+ * @param year The full year (e.g., 2025).
+ * @param spec An array of event specifications.
+ * @returns A Calendar object.
+ */
 export function createCalendar(year: number, spec: EventSpec): Calendar {
     const months = range(12).map((_, i) => createMonth(year, i, spec));
     return { year, months };
 }
 
+/**
+ * Creates a single month within a year.
+ * @param year The full year.
+ * @param month The zero-based month index (0-11).
+ * @param spec The array of event specifications.
+ * @returns A Month object.
+ */
 function createMonth(year: number, month: number, spec: EventSpec): Month {
     const weeks = createWeeks(year, month, spec);
     return { name: monthName(month), weeks, number: month };
 }
 
+/**
+ * Returns the full name of a month.
+ * @param month The zero-based month index (0-11).
+ * @returns The English name of the month.
+ */
 function monthName(month: number): string {
     return [
         'January',
@@ -47,6 +80,13 @@ function monthName(month: number): string {
     ][month];
 }
 
+/**
+ * Creates the grid of weeks for a given month.
+ * @param year The full year.
+ * @param month The zero-based month index (0-11).
+ * @param spec The array of event specifications.
+ * @returns An array of Week objects.
+ */
 function createWeeks(year: number, month: number, spec: EventSpec): Week[] {
     const firstDay = new Date(year, month, 1).getDay();
     const lastDate = new Date(year, month + 1, 0).getDate();
@@ -94,10 +134,22 @@ function createWeeks(year: number, month: number, spec: EventSpec): Week[] {
     ];
 }
 
+/**
+ * Generates an array of numbers from 0 to n-1.
+ * @param n The number of items to generate.
+ * @returns An array of numbers.
+ */
 function range(n: number): number[] {
     return Array.from({ length: n }, (_, i) => i);
 }
 
+/**
+ * Parses a multiline string of events into a structured object.
+ * The expected format for each line is "Mmm dd: Event description".
+ * @param text The raw string of events.
+ * @param currentYear The year to associate the events with.
+ * @returns A record mapping a date key (`YYYY-M-D`) to an array of event descriptions.
+ */
 export function parseEvents(text: string, currentYear: number): Record<string, string[]> {
     const regex = /([A-Za-z]{3})\s(\d{1,2}):\s(.+)/g;
     const monthsMap: Record<string, number> = {
@@ -129,6 +181,12 @@ export function parseEvents(text: string, currentYear: number): Record<string, s
     return parsed;
 }
 
+/**
+ * Calculates the dates for Maundy Thursday and Good Friday for a given year.
+ * Uses the Meeus–Jones–Butcher algorithm to determine the date of Easter.
+ * @param year The full year.
+ * @returns An array of tuples, each containing [month, day, name].
+ */
 function easterDates(year: number): [number, number, string][] {
     // --- Meeus–Jones–Butcher Easter Algorithm ---
     const a = year % 19;
@@ -164,6 +222,11 @@ function easterDates(year: number): [number, number, string][] {
     ];
 }
 
+/**
+ * Generates a string of sample holiday events for a given year.
+ * @param year The full year.
+ * @returns A newline-separated string of events.
+ */
 export function sampleHolidays(year: number): string {
     const dates: [number, number, string][] = [
         [1, 1, 'New Year'],
