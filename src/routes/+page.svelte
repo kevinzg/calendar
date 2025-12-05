@@ -93,7 +93,7 @@
             <div class="grid-container w-full border border-gray-200 px-2 py-2">
                 {#each days as day, i (i)}
                     <div
-                        class="h-8 content-center bg-gray-700 text-center text-sm font-semibold text-white"
+                        class="h-8 leading-7.5 bg-gray-600 text-center text-2xl font-bold text-white"
                         class:weekend-header={[0, 6].includes(i)}
                     >
                         {day}
@@ -142,7 +142,7 @@
     }
 
     .weekend-header {
-        @apply bg-gray-950;
+        @apply bg-gray-900;
     }
 
     .grid-container {
