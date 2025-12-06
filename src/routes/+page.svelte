@@ -194,7 +194,7 @@
         @apply font-extrabold text-gray-950;
     }
 
-    :global(.background-icon > svg) {
+    :global(.background-icon svg) {
         @apply h-16 w-16;
     }
 </style>
