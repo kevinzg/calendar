@@ -230,7 +230,7 @@ function easterDates(year: number): [number, number, string][] {
 export function sampleHolidays(year: number): string {
     const dates: [number, number, string][] = [
         [1, 1, 'New Year'],
-        [2, 14, "Valentine's Day+"],
+        [2, 14, "Valentine's Day [heart]"],
         [3, 17, "St. Patrick's Day"],
         [4, 1, "April Fool's Day"],
         ...easterDates(year),

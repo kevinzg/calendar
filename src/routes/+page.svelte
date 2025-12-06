@@ -3,6 +3,8 @@
     import Heart from '$lib/assets/Heart.svelte';
     import Star from '$lib/assets/Star.svelte';
     import Circle from '$lib/assets/Circle.svelte';
+    import Tree from '$lib/assets/Tree.svelte';
+    import Cake from '$lib/assets/Cake.svelte';
     import { onMount } from 'svelte';
 
     let currentYear = $state(new Date().getFullYear());
@@ -44,7 +46,9 @@
 
 <main class="flex flex-col md:flex-row">
     <!-- Control Panel Sidebar -->
-    <aside class="w-full md:w-96 flex-col space-y-4 bg-gray-50 p-4 print:hidden">
+    <aside
+        class="w-full flex-col space-y-4 bg-gray-50 p-4 print:hidden md:order-first md:h-screen md:w-96 md:sticky md:top-0"
+    >
         <h1 class="text-2xl font-bold">Calendar</h1>
 
         <!-- Year Selector -->
@@ -52,14 +56,14 @@
             <h2 class="mb-2 text-lg font-semibold">Year</h2>
             <div class="flex items-center justify-between space-x-2">
                 <button
-                    class="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 transition hover:bg-gray-300 hover:cursor-pointer w-12 font-bold text-2xl"
+                    class="w-12 rounded-lg bg-gray-200 px-4 py-2 font-bold text-gray-700 transition hover:bg-gray-300 hover:cursor-pointer text-2xl"
                     onclick={() => currentYear--}
                 >
                     &lt;
                 </button>
                 <span class="text-2xl font-semibold">{currentYear}</span>
                 <button
-                    class="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 transition hover:bg-gray-300 hover:cursor-pointer w-12 font-bold text-2xl"
+                    class="w-12 rounded-lg bg-gray-200 px-4 py-2 font-bold text-gray-700 transition hover:bg-gray-300 hover:cursor-pointer text-2xl"
                     onclick={() => currentYear++}
                 >
                     &gt;
@@ -72,7 +76,23 @@
             <h2 class="text-lg font-semibold">Events</h2>
             <ul class="mb-2 text-sm text-gray-600">
                 <li>Format: <code>Jan 1: New Year</code></li>
-                <li>Use <code>*</code> for a ★, or <code>+</code> for a ♥</li>
+                <li>
+                    Decorations:
+                    <ul class="pl-2 list-['-']">
+                        <li class="pl-1">
+                            <Star class="inline w-4"></Star>: <code>[star]</code> or <code>*</code>
+                        </li>
+                        <li class="pl-1">
+                            <Heart class="inline w-4"></Heart>: <code>[heart]</code>
+                        </li>
+                        <li class="pl-1">
+                            <Tree class="inline w-4"></Tree>: <code>[tree]</code>
+                        </li>
+                        <li class="pl-1">
+                            <Cake class="inline w-4"></Cake>: <code>[cake]</code>
+                        </li>
+                    </ul>
+                </li>
             </ul>
             <textarea
                 class="w-full rounded-lg border p-2 font-mono"
@@ -96,7 +116,7 @@
     </aside>
 
     <!-- Calendar View -->
-    <div class="flex-1 space-y-8 overflow-y-auto p-4 font-calendar">
+    <div class="flex-1 space-y-8 p-4 font-calendar">
         {#each calendar.months as month (month.name)}
             <div class:break-after-page={month.number % 2 === 1 && month.number !== 11}>
                 <div class="flex justify-between px-10 py-4 text-4xl">
@@ -124,14 +144,18 @@
                                 {day.date}
                                 {#if day.event}
                                     <div
-                                        class="absolute inset-0 -z-10 flex items-center justify-center text-gray-300"
+                                        class="absolute inset-0 -z-10 flex items-center justify-center text-gray-300 background-icon"
                                     >
-                                        {#if day.event.includes('+')}
-                                            <Heart className="w-16 h-16" />
-                                        {:else if day.event.includes('*')}
-                                            <Star className="w-16 h-16" />
+                                        {#if day.event.includes('[heart]')}
+                                            <Heart />
+                                        {:else if day.event.includes('[star]') || day.event.includes('*')}
+                                            <Star />
+                                        {:else if day.event.includes('[tree]')}
+                                            <Tree />
+                                        {:else if day.event.includes('[cake]')}
+                                            <Cake />
                                         {:else}
-                                            <Circle className="w-16 h-16" />
+                                            <Circle />
                                         {/if}
                                     </div>
                                 {/if}
@@ -145,7 +169,7 @@
 </main>
 
 <style lang="postcss">
-    @reference "tailwindcss";
+    @reference 'tailwindcss';
 
     .other-month {
         @apply text-gray-300;
@@ -167,6 +191,10 @@
     }
 
     .holiday {
-        @apply font-extrabold underline;
+        @apply font-extrabold text-gray-950;
+    }
+
+    :global(.background-icon > svg) {
+        @apply h-16 w-16;
     }
 </style>

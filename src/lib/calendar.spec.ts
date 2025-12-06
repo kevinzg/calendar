@@ -140,7 +140,7 @@ describe('sampleHolidays', () => {
         const holidays = sampleHolidays(year);
 
         expect(holidays).toContain('Jan 1: New Year');
-        expect(holidays).toContain("Feb 14: Valentine's Day+");
+        expect(holidays).toContain("Feb 14: Valentine's Day");
         expect(holidays).toContain("Mar 17: St. Patrick's Day");
         expect(holidays).toContain("Apr 1: April Fool's Day");
         // Easter dates for 2024: Maundy Thursday (Mar 28), Good Friday (Mar 29)
@@ -163,7 +163,7 @@ describe('sampleHolidays', () => {
     it('should include special markers in event names', () => {
         const year = 2024;
         const holidays = sampleHolidays(year);
-        expect(holidays).toContain("Valentine's Day+");
+        expect(holidays).toContain("Valentine's Day [heart]");
         expect(holidays).toContain('Christmas*');
     });
 });
