@@ -6,6 +6,7 @@
     import Tree from '$lib/assets/Tree.svelte';
     import Cake from '$lib/assets/Cake.svelte';
     import { onMount } from 'svelte';
+    import { browser } from '$app/environment';
 
     let currentYear = $state(new Date().getFullYear());
     // svelte-ignore state_referenced_locally
@@ -23,8 +24,30 @@
     });
     let calendar = $derived(createCalendar(currentYear, spec));
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    let isShared = false;
+    let showCopyMessage = $state(false);
 
     onMount(() => {
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            try {
+                const decodedState = atob(hash);
+                const state = JSON.parse(decodedState);
+                if (state.year && state.events) {
+                    currentYear = state.year;
+                    userEventsText = state.events;
+                    isShared = true;
+                }
+            } catch (e) {
+                console.error('Failed to parse shared state:', e);
+                loadFromLocalStorage();
+            }
+        } else {
+            loadFromLocalStorage();
+        }
+    });
+
+    function loadFromLocalStorage() {
         const savedEvents = localStorage.getItem('events');
         if (savedEvents) {
             userEventsText = savedEvents;
@@ -33,15 +56,34 @@
         if (savedYear) {
             currentYear = parseInt(savedYear, 10);
         }
+    }
+
+    $effect(() => {
+        if (!isShared && browser) {
+            localStorage.setItem('events', userEventsText);
+        }
     });
 
     $effect(() => {
-        localStorage.setItem('events', userEventsText);
+        if (!isShared && browser) {
+            localStorage.setItem('year', `${currentYear}`);
+        }
     });
 
-    $effect(() => {
-        localStorage.setItem('year', `${currentYear}`);
-    });
+    function share() {
+        const state = {
+            year: currentYear,
+            events: userEventsText,
+        };
+        const jsonState = JSON.stringify(state);
+        const base64State = btoa(jsonState);
+        const url = `${window.location.origin}#${base64State}`;
+        navigator.clipboard.writeText(url);
+        showCopyMessage = true;
+        setTimeout(() => {
+            showCopyMessage = false;
+        }, 2000);
+    }
 </script>
 
 <main class="flex flex-col md:flex-row">
@@ -56,14 +98,14 @@
             <h2 class="mb-2 text-lg font-semibold">Year</h2>
             <div class="flex items-center justify-between space-x-2">
                 <button
-                    class="w-12 rounded-lg bg-gray-200 px-4 py-2 font-bold text-gray-700 transition hover:bg-gray-300 hover:cursor-pointer text-2xl"
+                    class="w-12 rounded-lg bg-gray-200 px-4 py-2 font-bold text-gray-700 transition hover:bg-gray-300 text-2xl"
                     onclick={() => currentYear--}
                 >
                     &lt;
                 </button>
                 <span class="text-2xl font-semibold">{currentYear}</span>
                 <button
-                    class="w-12 rounded-lg bg-gray-200 px-4 py-2 font-bold text-gray-700 transition hover:bg-gray-300 hover:cursor-pointer text-2xl"
+                    class="w-12 rounded-lg bg-gray-200 px-4 py-2 font-bold text-gray-700 transition hover:bg-gray-300 text-2xl"
                     onclick={() => currentYear++}
                 >
                     &gt;
@@ -107,10 +149,26 @@
             <h2 class="text-lg font-semibold">Export</h2>
             <p class="mb-2 text-sm text-gray-600">Print the calendar or save it as a PDF.</p>
             <button
-                class="w-full rounded-lg bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600"
+                class="w-full rounded-lg bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600 font-bold"
                 onclick={() => window.print()}
             >
                 Print Calendar
+            </button>
+        </div>
+
+        <!-- Share Button -->
+        <div class="rounded-lg border bg-white p-4 pt-2">
+            <h2 class="text-lg font-semibold">Share</h2>
+            <p class="mb-2 text-sm text-gray-600">Copy a link to your clipboard.</p>
+            <button
+                class="w-full rounded-lg bg-green-500 px-4 py-2 text-white transition hover:bg-green-600 font-bold"
+                onclick={share}
+            >
+                {#if showCopyMessage}
+                    Copied!
+                {:else}
+                    Copy Share Link
+                {/if}
             </button>
         </div>
     </aside>
@@ -196,5 +254,9 @@
 
     :global(.background-icon svg) {
         @apply h-16 w-16;
+    }
+
+    button {
+        @apply hover:cursor-pointer;
     }
 </style>
