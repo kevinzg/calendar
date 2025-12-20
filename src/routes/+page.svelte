@@ -94,6 +94,7 @@
         const state = {
             year: currentYear,
             events: userEventsText,
+            ...(googleFont && { font: googleFont }),
         };
         const jsonState = JSON.stringify(state);
         const base64State = btoa(jsonState);
