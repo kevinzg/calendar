@@ -151,7 +151,6 @@ function range(n: number): number[] {
  * @returns A record mapping a date key (`YYYY-M-D`) to an array of event descriptions.
  */
 export function parseEvents(text: string, currentYear: number): Record<string, string[]> {
-    const regex = /([A-Za-z]{3})\s(\d{1,2}):\s(.+)/g;
     const monthsMap: Record<string, number> = {
         Jan: 0,
         Feb: 1,
@@ -168,16 +167,26 @@ export function parseEvents(text: string, currentYear: number): Record<string, s
     };
 
     const parsed: Record<string, string[]> = {};
-    let match;
-    while ((match = regex.exec(text)) !== null) {
-        const [_, monthAbbr, day, description] = match;
-        const month = monthsMap[monthAbbr];
-        if (month === undefined) continue;
-        const dayNumber = parseInt(day, 10);
-        const key = `${currentYear}-${month}-${dayNumber}`;
-        if (!parsed[key]) parsed[key] = [];
-        parsed[key].push(description.trim());
-    }
+
+    text.split('\n').forEach((line) => {
+        const trimmedLine = line.trim();
+        if (trimmedLine.startsWith('#') || trimmedLine === '') {
+            return; // Ignore comments and empty lines
+        }
+
+        const regex = /([A-Za-z]{3})\s(\d{1,2}):\s(.+)/;
+        const match = trimmedLine.match(regex);
+
+        if (match) {
+            const [_, monthAbbr, day, description] = match;
+            const month = monthsMap[monthAbbr];
+            if (month === undefined) return;
+            const dayNumber = parseInt(day, 10);
+            const key = `${currentYear}-${month}-${dayNumber}`;
+            if (!parsed[key]) parsed[key] = [];
+            parsed[key].push(description.trim());
+        }
+    });
     return parsed;
 }
 

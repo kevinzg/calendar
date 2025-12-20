@@ -132,6 +132,16 @@ describe('parseEvents', () => {
             '2024-11-25': ['Event C'],
         });
     });
+
+    it('should ignore lines starting with #', () => {
+        const text =
+            "# This is a comment\nJan 1: New Year\n# Jan 15: Another comment\nFeb 14: Valentine's Day";
+        const parsed = parseEvents(text, currentYear);
+        expect(parsed).toEqual({
+            '2024-0-1': ['New Year'],
+            '2024-1-14': ["Valentine's Day"],
+        });
+    });
 });
 
 describe('sampleHolidays', () => {
