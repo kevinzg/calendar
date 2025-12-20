@@ -9,6 +9,10 @@
     import { browser } from '$app/environment';
 
     let currentYear = $state(new Date().getFullYear());
+    if (new Date().getMonth() === 11) {
+        // In December just start at next year
+        currentYear++;
+    }
     // svelte-ignore state_referenced_locally
     let userEventsText = $state(sampleHolidays(currentYear));
     let userEvents = $derived(parseEvents(userEventsText, currentYear));
