@@ -97,7 +97,7 @@
         };
         const jsonState = JSON.stringify(state);
         const base64State = btoa(jsonState);
-        const url = `${window.location.origin}#${base64State}`;
+        const url = `${window.location.origin}${window.location.pathname}#${base64State}`;
         navigator.clipboard.writeText(url);
         showCopyMessage = true;
         setTimeout(() => {
